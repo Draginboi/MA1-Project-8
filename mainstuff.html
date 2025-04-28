@@ -7,25 +7,58 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 40px;
+            margin: 0;
+            padding: 0;
             text-align: center;
+            background-color: #f0f0f0;
         }
+
         .content {
             max-width: 800px;
             margin: auto;
             text-align: left;
         }
-        .misconceptions, .scenario, .explanation {
-            margin-top: 20px;
-            padding: 10px;
+
+        .section {
+            margin-top: 50px;
+            padding: 40px;
             background-color: #f8f8f8;
             border-radius: 8px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
+
         .scenario {
             background-color: #e8f4f8;
         }
+
         .explanation {
             background-color: #f4e8f8;
+        }
+
+        .active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Animation for the transition */
+        h2 {
+            font-size: 1.8rem;
+            color: #333;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #333;
+            color: white;
         }
     </style>
 </head>
@@ -36,61 +69,50 @@
     <main>
         <div class="content">
             <p>The p-value is a measure of how compatible your data is with the null hypothesis. It does NOT represent the probability that the null hypothesis is true or false.</p>
-            
-            <div class="scenario">
+
+            <div class="section scenario">
                 <h2>Scenario: Testing a New Drug</h2>
                 <p>Imagine a pharmaceutical company is testing a new drug to reduce blood pressure. The null hypothesis (H₀) is that the drug has no effect, and the alternative hypothesis (H₁) is that the drug reduces blood pressure.</p>
                 <p>In a clinical trial, 50 participants are randomly assigned to either the drug group or the placebo group. After the trial, the average reduction in blood pressure for the drug group is 10 mmHg, while the placebo group shows no reduction. The p-value is calculated to be <strong>0.03</strong>.</p>
             </div>
 
-            <div class="explanation">
+            <div class="section explanation">
                 <h2>Key Points Explained</h2>
                 <ul>
-                    <li><strong>What has a probability of p?</strong><br>
-                        The p-value (0.03) represents the probability of observing a reduction in blood pressure as extreme as 10 mmHg (or more extreme) if the null hypothesis (no effect) were true.</li>
-                    <li><strong>Why does a low p-value indicate the null hypothesis is likely false?</strong><br>
-                        A low p-value (e.g., 0.03) suggests that the observed data is unlikely under the null hypothesis. This provides evidence to reject the null hypothesis in favor of the alternative hypothesis.</li>
-                    <li><strong>What is statistical significance, and why is p = 0.05 used as the cutoff?</strong><br>
-                        Statistical significance means the results are unlikely to have occurred by chance. The threshold of p = 0.05 is conventionally used because it balances the risk of false positives (Type I errors) and false negatives (Type II errors).</li>
-                    <li><strong>Why is p not the probability that the null hypothesis is true?</strong><br>
-                        The p-value does not measure the probability that the null hypothesis is true. It only measures the probability of the observed data under the assumption that the null hypothesis is true.</li>
-                    <li><strong>Why must statistical significance be determined for hypothesized outcomes?</strong><br>
-                        Statistical significance applies only to outcomes that were hypothesized before the study. Post hoc analyses can lead to false positives due to multiple comparisons.</li>
-                    <li><strong>How do extraneous variables affect p?</strong><br>
-                        Extraneous variables introduce noise, making it harder to detect true effects. This can increase the p-value, leading to a failure to reject the null hypothesis even when the alternative hypothesis is true.</li>
-                    <li><strong>How do confounding variables affect p?</strong><br>
-                        Confounding variables can create false associations, leading to a low p-value even when the null hypothesis is true. This undermines the validity of the conclusion.</li>
-                    <li><strong>The problem of statistical significance without internal validity:</strong><br>
-                        Achieving statistical significance without controlling for confounding variables means the results may not reflect a true causal relationship.</li>
-                    <li><strong>The problem of statistical significance without practical significance:</strong><br>
-                        A result can be statistically significant but have no meaningful impact in the real world. For example, a drug that reduces blood pressure by 0.1 mmHg may achieve p < 0.05 but is not clinically useful.</li>
+                    <li><strong>What has a probability of p?</strong><br>The p-value (0.03) represents the probability of observing a reduction in blood pressure as extreme as 10 mmHg (or more extreme) if the null hypothesis (no effect) were true.</li>
+                    <li><strong>Why does a low p-value indicate the null hypothesis is likely false?</strong><br>A low p-value (e.g., 0.03) suggests that the observed data is unlikely under the null hypothesis. This provides evidence to reject the null hypothesis in favor of the alternative hypothesis.</li>
+                    <li><strong>What is statistical significance, and why is p = 0.05 used as the cutoff?</strong><br>Statistical significance means the results are unlikely to have occurred by chance. The threshold of p = 0.05 is conventionally used because it balances the risk of false positives (Type I errors) and false negatives (Type II errors).</li>
+                    <li><strong>Why is p not the probability that the null hypothesis is true?</strong><br>The p-value does not measure the probability that the null hypothesis is true. It only measures the probability of the observed data under the assumption that the null hypothesis is true.</li>
                 </ul>
             </div>
 
-            <h2>Interactive Demonstration</h2>
-            <p>Try changing the sample size and effect size to see how the p-value changes:</p>
+            <div class="section">
+                <h2>Interactive Demonstration</h2>
+                <p>Try changing the sample size and effect size to see how the p-value changes:</p>
+                <label for="sample-size">Sample Size:</label>
+                <input type="range" id="sample-size" min="10" max="100" value="50" oninput="updateValue('sample-size', this.value)">
+                <span id="sample-size-value">50</span> <br><br>
 
-            <label for="sample-size">Sample Size:</label>
-            <input type="range" id="sample-size" min="10" max="100" value="50" oninput="updateValue('sample-size', this.value)">
-            <span id="sample-size-value">50</span> <br><br>
+                <label for="effect-size">Effect Size:</label>
+                <input type="range" id="effect-size" min="0.1" max="5" step="0.1" value="2" oninput="updateValue('effect-size', this.value)">
+                <span id="effect-size-value">2</span> <br><br>
 
-            <label for="effect-size">Effect Size:</label>
-            <input type="range" id="effect-size" min="0.1" max="5" step="0.1" value="2" oninput="updateValue('effect-size', this.value)">
-            <span id="effect-size-value">2</span> <br><br>
-
-            <button onclick="calculatePValue()">Calculate P-Value</button>
-
-            <h3>Estimated P-Value: <span id="result">N/A</span></h3>
+                <button onclick="calculatePValue()">Calculate P-Value</button>
+                <h3>Estimated P-Value: <span id="result">N/A</span></h3>
+            </div>
         </div>
     </main>
     <footer>
-        <p>&copy; 2025 Isaiah and Riley</p>idk</p>
+        <p>&copy; 2025</p>
     </footer>
+
     <script>
+        // Function to update the value of the input range
         function updateValue(id, value) {
             document.getElementById(`${id}-value`).innerText = value;
         }
 
+        // Simulate p-value calculation
         function calculatePValue() {
             let sampleSize = document.getElementById("sample-size").value;
             let effectSize = document.getElementById("effect-size").value;
@@ -101,6 +123,27 @@
 
             document.getElementById("result").innerText = pValue;
         }
+
+        // IntersectionObserver to trigger animation when sections come into view
+        const sections = document.querySelectorAll('.section');
+        const options = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5 // Trigger animation when 50% of the section is visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, options);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
     </script>
 </body>
 </html>
