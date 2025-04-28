@@ -1,242 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>P Values Explained</title>
-
-  <!-- progress bar -->
-  <style>
-    #progress-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 5px;
-      background: rgba(0,0,0,0.1);
-      z-index: 999;
-    }
-    #progress-bar {
-      width: 0%;
-      height: 100%;
-      background: #29e;
-      transition: width 0.1s;
-    }
-  </style>
-
-  <!-- main styles -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Understanding P-Values - Cool Edition</title>
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      scroll-behavior: smooth;
+      padding: 0;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, #0f2027, #203a43, #2c5364);
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      height: 100vh;
+      width: 100vw;
+      perspective: 1200px;
     }
-    header {
-      position: sticky;
-      top: 0;
-      background: rgba(255,255,255,0.9);
-      backdrop-filter: blur(5px);
-      z-index: 10;
-      text-align: center;
-      padding: 1rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    header h1 {
-      margin: 0;
-      font-size: 1.8rem;
-    }
-    section {
+
+    .container {
       position: relative;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-      color: white;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+      width: 100%;
+      height: 100%;
       overflow: hidden;
     }
-    /* Parallax backgrounds */
-    section:nth-of-type(1) {
-      background: url('https://source.unsplash.com/1600x900/?abstract,pattern') center / cover fixed;
-    }
-    section:nth-of-type(2) {
-      background: url('https://source.unsplash.com/1600x900/?laboratory') center / cover fixed;
-    }
-    section:nth-of-type(3) {
-      background: url('https://source.unsplash.com/1600x900/?data,network') center / cover fixed;
-    }
-    section:nth-of-type(4) {
-      background: url('https://source.unsplash.com/1600x900/?statistics') center / cover fixed;
-    }
 
-    .overlay {
-      background: rgba(0,0,0,0.4);
-      border-radius: 8px;
-      padding: 2rem;
-      max-width: 800px;
-      width: 90%;
-    }
-
-    /* Reveal animation */
-    .reveal {
+    .slide {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8) rotateX(30deg);
       opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
+      transition: opacity 0.4s ease-out, transform 0.8s ease-out;
+      text-align: center;
+      width: 80%;
+      max-width: 800px;
+      padding: 50px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
     }
 
-    /* Slider styles */
-    .slider-row {
-      margin: 1rem 0;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
+    .slide.active {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1) rotateX(0deg);
     }
-    input[type="range"] {
-      flex: 1;
+
+    h1, h2 {
+      margin-bottom: 20px;
+      font-size: 2.5em;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 3s infinite alternate;
     }
-    button {
-      padding: 0.6rem 1.2rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 4px;
-      background: #29e;
-      color: #fff;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background: #0bc;
-    }
-    h3 span {
-      color: #ffcc00;
+
+    p {
+      font-size: 1.3em;
+      color: #ccc;
+      transition: opacity 0.4s ease-out;
     }
 
     footer {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
       text-align: center;
-      padding: 1rem;
-      background: #111;
-      color: #888;
+      font-size: 0.8em;
+      color: #777;
     }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #00c6ff; }
+      to { text-shadow: 0 0 20px #0072ff; }
+    }
+
+    /* Fancy animated particles */
+    .particles {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.2;
+      animation: floatParticle 15s infinite linear;
+    }
+
+    @keyframes floatParticle {
+      0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-100vh) translateX(100px);
+        opacity: 0;
+      }
+    }
+
   </style>
 </head>
 <body>
 
-  <div id="progress-container">
-    <div id="progress-bar"></div>
+<div class="container">
+  
+  <div class="particles">
+    <div class="particle" style="width:8px;height:8px;top:80%;left:20%;animation-duration:18s;"></div>
+    <div class="particle" style="width:6px;height:6px;top:60%;left:40%;animation-duration:22s;"></div>
+    <div class="particle" style="width:10px;height:10px;top:90%;left:60%;animation-duration:19s;"></div>
+    <div class="particle" style="width:5px;height:5px;top:70%;left:80%;animation-duration:25s;"></div>
+    <div class="particle" style="width:7px;height:7px;top:85%;left:30%;animation-duration:21s;"></div>
+    <div class="particle" style="width:4px;height:4px;top:75%;left:10%;animation-duration:26s;"></div>
   </div>
 
-  <header>
+  <div class="slide active">
     <h1>Understanding P-Values</h1>
-  </header>
+    <p>P-values help us see how likely it is to get our results if the null hypothesis were true. They're about the data, not the truth of the hypothesis itself!</p>
+  </div>
 
-  <section>
-    <div class="overlay reveal">
-      <p>The <strong>p-value</strong> measures how compatible your data is with the null hypothesis. Lower p-values suggest your data would be rare if the null hypothesis were true.</p>
-    </div>
-  </section>
+  <div class="slide">
+    <h2>Scenario: Coin Flip Challenge</h2>
+    <p>Suppose someone claims they have a magic coin that lands heads 70% of the time. You test it with 100 flips and get 68 heads.<br> Your calculated p-value = <strong>0.04</strong>.</p>
+  </div>
 
-  <section>
-    <div class="overlay reveal">
-      <h2>Scenario: Testing a New Drug</h2>
-      <p>Imagine a pharmaceutical company is testing a new drug to reduce blood pressure. Patients are randomly assigned to receive either the drug or a placebo, and blood pressure changes are recorded.</p>
-    </div>
-  </section>
+  <div class="slide">
+    <h2>Breaking It Down</h2>
+    <p>- A p-value of 0.04 means: if the coin was normal (50/50), there's a 4% chance of getting results like this.<br>- Small p-value? Unlikely if normal. Maybe the coin really is special?</p>
+  </div>
 
-  <section>
-    <div class="overlay reveal">
-      <h2>Key Points Explained</h2>
-      <ul>
-        <li><strong>What has a probability of p?</strong><br>
-            The p-value is the probability of observing results at least as extreme as yours, <em>assuming</em> the null hypothesis is true.</li>
-        <li><strong>Why does a low p-value indicate the null hypothesis is likely false?</strong><br>
-            Because your observed data would be very unlikely under the null model.</li>
-        <li><strong>What is statistical significance?</strong><br>
-            A result is “statistically significant” if its p-value falls below a pre-set threshold (commonly 0.05).</li>
-      </ul>
-    </div>
-  </section>
+  <div class="slide">
+    <h2>The Big Picture</h2>
+    <p>Low p-values suggest surprising results under the null hypothesis, but they don't *prove* anything! Always combine p-values with context and reasoning!</p>
+  </div>
 
-  <section>
-    <div class="overlay reveal">
-      <h2>Interactive Demonstration</h2>
-      <p>Adjust the sample size and effect size to see how the p-value changes in real time.</p>
+  <footer>Made with ❤️ by Peter and Josh</footer>
 
-      <div class="slider-row">
-        <label for="sample-size">Sample Size:</label>
-        <input type="range" id="sample-size" min="10" max="500" value="50">
-        <span id="sample-size-value">50</span>
-      </div>
+</div>
 
-      <div class="slider-row">
-        <label for="effect-size">Effect Size:</label>
-        <input type="range" id="effect-size" min="0.1" max="5" step="0.1" value="2">
-        <span id="effect-size-value">2.0</span>
-      </div>
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let currentSlide = 0;
+  let isScrolling = false;
 
-      <button id="calc-btn">Calculate P-Value</button>
-      <h3>Estimated P-Value: <span id="result">N/A</span></h3>
-    </div>
-  </section>
-
-  <footer>&copy; 2025</footer>
-
-  <script>
-    // Scroll progress bar
-    const progressBar = document.getElementById('progress-bar');
-    window.addEventListener('scroll', () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.body.scrollHeight - window.innerHeight;
-      const pct = (scrollTop / docHeight) * 100;
-      progressBar.style.width = pct + '%';
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === index);
     });
+  }
 
-    // Reveal on scroll via IntersectionObserver
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) e.target.classList.add('visible');
-      });
-    }, { threshold: 0.3 });
-    reveals.forEach(r => observer.observe(r));
-
-    // Slider & p-value logic
-    const sampleSlider = document.getElementById('sample-size');
-    const effectSlider = document.getElementById('effect-size');
-    const sampleVal    = document.getElementById('sample-size-value');
-    const effectVal    = document.getElementById('effect-size-value');
-    const resultSpan   = document.getElementById('result');
-    const calcBtn      = document.getElementById('calc-btn');
-
-    function updateValue(id, val) {
-      if (id === 'sample-size') sampleVal.innerText = val;
-      else if (id === 'effect-size') effectVal.innerText = parseFloat(val).toFixed(1);
+  function nextSlide() {
+    if (currentSlide < slides.length - 1) {
+      currentSlide++;
+      showSlide(currentSlide);
+      changeBackground(currentSlide);
     }
+  }
 
-    function calculatePValue() {
-      const n = +sampleSlider.value;
-      const d = +effectSlider.value;
-      let p = Math.exp(-d / Math.sqrt(n));
-      p = Math.min(1, +p.toFixed(4));
-      resultSpan.innerText = p;
+  function prevSlide() {
+    if (currentSlide > 0) {
+      currentSlide--;
+      showSlide(currentSlide);
+      changeBackground(currentSlide);
     }
+  }
 
-    // Update on drag
-    [sampleSlider, effectSlider].forEach(slider => {
-      slider.addEventListener('input', e => {
-        updateValue(e.target.id, e.target.value);
-        calculatePValue();
-      });
-    });
-    // Also on button click
-    calcBtn.addEventListener('click', calculatePValue);
+  window.addEventListener('wheel', e => {
+    if (isScrolling) return;
+    isScrolling = true;
+    if (e.deltaY > 0) {
+      nextSlide();
+    } else {
+      prevSlide();
+    }
+    setTimeout(() => isScrolling = false, 800);
+  });
 
-    // Initialize
-    calculatePValue();
-  </script>
+  window.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      nextSlide();
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      prevSlide();
+    }
+  });
+
+  const body = document.body;
+  function changeBackground(index) {
+    const backgrounds = [
+      'radial-gradient(ellipse at center, #0f2027, #203a43, #2c5364)',
+      'radial-gradient(ellipse at center, #1e3c72, #2a5298)',
+      'radial-gradient(ellipse at center, #ff7e5f, #feb47b)',
+      'radial-gradient(ellipse at center, #3a1c71, #d76d77, #ffaf7b)'
+    ];
+    body.style.background = backgrounds[index % backgrounds.length];
+  }
+
+</script>
+
 </body>
 </html>
