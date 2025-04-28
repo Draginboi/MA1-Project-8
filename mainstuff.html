@@ -5,45 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>P Values Explained</title>
     <style>
+        /* General body styles */
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            font-family: Arial, sans-serif;
             height: 100vh;
-            background-color: #f0f0f0;
+            overflow: hidden;
         }
 
-        /* Container for the whole page */
+        /* Main container for smooth scroll */
         main {
             display: flex;
             flex-direction: column;
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
-            height: 100vh;
             scroll-behavior: smooth;
+            height: 100vh;
         }
 
-        /* Make each section take full height and center the content */
+        /* Make each section fill the screen and center content */
         .content {
             scroll-snap-align: start;
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
             padding: 20px;
-            text-align: left;
-            background-color: #fff;
-            transition: opacity 0.5s ease;
+            opacity: 0;
+            transition: opacity 1s ease;
+            flex-direction: column;
         }
 
-        .misconceptions, .scenario, .explanation {
-            margin-top: 20px;
-            padding: 10px;
+        .scenario, .explanation {
             background-color: #f8f8f8;
             border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            width: 80%;
+            max-width: 800px;
         }
 
         .scenario {
@@ -54,36 +53,31 @@
             background-color: #f4e8f8;
         }
 
-        h1 {
-            margin-bottom: 20px;
+        footer {
+            margin-top: 20px;
+            text-align: center;
         }
 
-        h2 {
-            color: #333;
-        }
-
-        /* Fade transition for each section */
-        .content.in-view {
+        /* Optional: Styling for fade-in effect */
+        .in-view {
             opacity: 1;
         }
 
-        .content.out-of-view {
+        .out-of-view {
             opacity: 0;
         }
 
-        footer {
-            text-align: center;
-            margin-top: 30px;
-        }
     </style>
 </head>
 <body>
+
     <header>
-        <h1>Understanding P-Values</h1>
+        <h1 style="text-align: center; padding-top: 20px;">Understanding P-Values</h1>
     </header>
+
     <main>
         <div class="content">
-            <p>The p-value is a measure of how compatible your data is with the null hypothesis. It does NOT represent the probability that the null hypothesis is true or false.</p>
+            <p>The p-value is a measure of how compatible your data is with the null hypothesis...</p>
         </div>
 
         <div class="content">
@@ -97,8 +91,9 @@
             <div class="explanation">
                 <h2>Key Points Explained</h2>
                 <ul>
-                    <li><strong>What has a probability of p?</strong><br>The p-value represents the probability of observing data...</li>
-                    <!-- Add more list items here -->
+                    <li><strong>What has a probability of p?</strong><br>The p-value represents the probability of observing a reduction in blood pressure...</li>
+                    <li><strong>Why does a low p-value indicate the null hypothesis is likely false?</strong><br>A low p-value suggests that the observed data is unlikely under the null hypothesis...</li>
+                    <li><strong>What is statistical significance?</strong><br>Statistical significance means the results are unlikely to have occurred by chance...</li>
                 </ul>
             </div>
         </div>
@@ -106,46 +101,49 @@
         <div class="content">
             <h2>Interactive Demonstration</h2>
             <p>Try changing the sample size and effect size to see how the p-value changes:</p>
-
             <label for="sample-size">Sample Size:</label>
-            <input type="range" id="sample-size" min="10" max="100" value="50" oninput="updateValue('sample-size', this.value)">
+            <input type="range" id="sample-size" min="10" max="100" value="50">
             <span id="sample-size-value">50</span> <br><br>
 
             <label for="effect-size">Effect Size:</label>
-            <input type="range" id="effect-size" min="0.1" max="5" step="0.1" value="2" oninput="updateValue('effect-size', this.value)">
+            <input type="range" id="effect-size" min="0.1" max="5" step="0.1" value="2">
             <span id="effect-size-value">2</span> <br><br>
 
             <button onclick="calculatePValue()">Calculate P-Value</button>
 
             <h3>Estimated P-Value: <span id="result">N/A</span></h3>
         </div>
+
     </main>
+
     <footer>
         <p>&copy; 2025</p>
     </footer>
 
     <script>
+        // Function to update values in real-time
         function updateValue(id, value) {
             document.getElementById(`${id}-value`).innerText = value;
         }
 
+        // Simulated p-value calculation (simplified)
         function calculatePValue() {
             let sampleSize = document.getElementById("sample-size").value;
             let effectSize = document.getElementById("effect-size").value;
 
-            // Simulated calculation (not statistically rigorous)
             let pValue = Math.exp(-effectSize / Math.sqrt(sampleSize));
             pValue = Math.min(1, pValue.toFixed(4));
 
             document.getElementById("result").innerText = pValue;
         }
 
-        // Handle scroll events and fade in sections
+        // Check which sections are in view for fading effect
         const sections = document.querySelectorAll('.content');
 
         function checkScrollPosition() {
-            sections.forEach(section => {
+            sections.forEach((section) => {
                 const rect = section.getBoundingClientRect();
+
                 if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
                     section.classList.add('in-view');
                     section.classList.remove('out-of-view');
@@ -157,7 +155,8 @@
         }
 
         window.addEventListener('scroll', checkScrollPosition);
-        checkScrollPosition();  // Check on page load
+        checkScrollPosition(); // Run on page load
     </script>
+
 </body>
 </html>
