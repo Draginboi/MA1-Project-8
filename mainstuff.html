@@ -337,14 +337,24 @@
 
 
 
-    document.body.addEventListener('click', function() {
-    if (Math.random() < 0.01) { // 1/100 chance
-    // Allow the current click action to complete before redirect
-    setTimeout(function() {
-    window.location.href = "https://soggy.cat";
-    }, 0);
-    }
-    });
+        document.body.addEventListener('click', function () {
+            if (Math.random() < 0.01) { // 1/100 chance
+                const soggyPaths = [
+                    "dry",
+                    "billy"
+       
+
+                ];
+
+                // Choose one at random
+                const randomPath = soggyPaths[Math.floor(Math.random() * soggyPaths.length)];
+
+                setTimeout(function () {
+                    window.location.href = `https://soggy.cat/${randomPath}`;
+                }, 0);
+            }
+        });
+
 
     </script>
 
