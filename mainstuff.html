@@ -21,6 +21,37 @@
             touch-action: none;
         }
 
+        /*
+        // Custom Cursor Style
+
+        .custom-cursor {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00c6ff;
+            pointer-events: none;
+
+            //Prevent blocking interactions 
+            transition: transform 0.1s ease-in-out;
+            transform: scale(1);
+            z-index: 9999;
+        }
+
+        // Grow on hover over links/buttons 
+        a:hover ~ .custom-cursor,
+        button:hover ~ .custom-cursor {
+            width: 35px;
+            height: 35px;
+            background-color: #00f0ff;
+        }
+
+
+        */
+
+        
+
+
         .container {
             position: relative;
             width: 100%;
@@ -187,6 +218,11 @@
         </div>
 
         <footer>Made with ❤️ by Josh and Peter</footer>
+
+        <div class="custom-cursor"></div>
+
+
+
     </div>
 
     <script>
@@ -275,6 +311,47 @@
 
         flipsSlider.oninput = headsSlider.oninput = updatePDemo;
         updatePDemo();
+
+
+        /*
+
+        //cursor thing
+        // Track mouse position
+        const cursor = document.querySelector('.custom-cursor');
+        document.addEventListener('mousemove', function (event) {
+            cursor.style.left = `${event.pageX - cursor.offsetWidth / 2}px`;
+            cursor.style.top = `${event.pageY - cursor.offsetHeight / 2}px`;
+        });
+
+        // Add scale effect on mouse interaction
+        document.addEventListener('mouseover', function () {
+            cursor.style.transform = 'scale(1.5)';
+        });
+        document.addEventListener('mouseout', function () {
+            cursor.style.transform = 'scale(1)';
+        });
+
+
+        */
+
+
+
+
+    document.body.addEventListener('click', function() {
+    if (Math.random() < 0.01) { // 1/100 chance
+    // Allow the current click action to complete before redirect
+    setTimeout(function() {
+    window.location.href = "https://soggy.cat";
+    }, 0);
+    }
+    });
+
     </script>
+
+
+
+
+
+
 </body>
 </html>
