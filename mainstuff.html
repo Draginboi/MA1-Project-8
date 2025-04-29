@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Understanding P-Values - Cool Edition</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
         body {
             margin: 0;
             padding: 0;
@@ -30,53 +32,55 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%) scale(0.8) rotateX(30deg);
+            transform: translate(-50%, -50%) scale(0.9) rotateX(20deg);
             opacity: 0;
-            transition: opacity 0.4s ease, transform 0.6s ease;
-            width: 80%;
-            max-width: 800px;
-            padding: 50px;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.2);
+            transition: opacity 0.4s ease, transform 0.5s ease;
+            width: 85%;
+            max-width: 850px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             text-align: center;
+            z-index: 2;
         }
 
             .slide.active {
                 opacity: 1;
-                transform: translate(-50%,-50%) scale(1) rotateX(0deg);
+                transform: translate(-50%, -50%) scale(1) rotateX(0deg);
             }
 
         h1, h2 {
+            font-size: 2.3em;
             margin-bottom: 20px;
-            font-size: 2.5em;
-            background: linear-gradient(90deg,#00c6ff,#0072ff);
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: glow 3s infinite alternate;
         }
 
         p, label, h3 {
-            font-size: 1.2em;
+            font-size: 1.1em;
             color: #ddd;
-            margin: 10px 0;
+            margin: 12px 0;
         }
 
         input[type=range] {
             width: 100%;
-            margin: 10px 0 20px;
+            margin: 10px 0 25px;
+            cursor: pointer;
         }
 
         footer {
             position: absolute;
-            bottom: 10px;
+            bottom: 12px;
             width: 100%;
             text-align: center;
-            font-size: 0.8em;
-            color: #777;
-            transition: opacity 0.3s ease;
+            font-size: 0.85em;
+            color: #aaa;
+            z-index: 1;
         }
 
         @keyframes glow {
@@ -91,42 +95,52 @@
 
         .particles {
             position: absolute;
-            inset: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             pointer-events: none;
-            overflow: hidden;
             z-index: 0;
+            overflow: hidden;
         }
 
         .particle {
             position: absolute;
             background: white;
             border-radius: 50%;
-            opacity: 0.2;
+            opacity: 0.4;
             animation: floatParticle linear infinite;
-            will-change: transform, opacity;
         }
 
         @keyframes floatParticle {
             0% {
-                transform: translateY(100vh) translateX(0);
-                opacity: 0;
-            }
-
-            50% {
-                opacity: 0.5;
+                transform: translateY(100vh);
+                opacity: 0.6;
             }
 
             100% {
-                transform: translateY(-100vh) translateX(100px);
-                opacity: 0;
+                transform: translateY(-100vh);
+                opacity: 0.1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .slide {
+                padding: 25px;
+            }
+
+            h1, h2 {
+                font-size: 1.6em;
+            }
+
+            p, label, h3 {
+                font-size: 1em;
             }
         }
     </style>
 </head>
 <body>
-
     <div class="container">
-
         <div class="particles" id="particles"></div>
 
         <div class="slide active">
@@ -159,23 +173,16 @@
 
         <div class="slide">
             <h2>Final Thought</h2>
-            <p>
-                P-values ask "how weird is this data if the null is true?"<br>
-                But the answer still depends on how well your study was done. Use them wisely, not blindly.
-            </p>
+            <p>P-values ask "how weird is this data if the null is true?"<br>But the answer still depends on how well your study was done.</p>
         </div>
 
-        <!-- Interactive P-Value Demo Slide -->
         <div class="slide">
             <h2>Interactive P-Value Demo</h2>
             <p>Adjust these sliders to calculate a p-value for your coin-flip experiment:</p>
-
             <label for="flipsSlider">Number of Flips: <span id="flipsCount">100</span></label>
             <input type="range" id="flipsSlider" min="10" max="1000" step="10" value="100">
-
             <label for="headsSlider">Number of Heads: <span id="headsCount">60</span></label>
             <input type="range" id="headsSlider" min="0" max="1000" step="1" value="60">
-
             <h3>Estimated P-Value: <span id="pValue">…</span></h3>
         </div>
 
@@ -183,87 +190,90 @@
     </div>
 
     <script>
-        // Particles
+        // Particle animation
         const partContainer = document.getElementById('particles');
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 15; i++) {
             const p = document.createElement('div');
             p.className = 'particle';
-            const size = 4 + Math.random() * 12;
-            p.style.width = p.style.height = size + 'px';
-            p.style.left = Math.random() * 100 + 'vw';
-            p.style.top = Math.random() * 100 + 'vh';
-            p.style.animationDuration = 15 + Math.random() * 20 + 's';
-            p.style.animationDelay = -Math.random() * 20 + 's';
+            const size = 3 + Math.random() * 10;
+            p.style.width = p.style.height = `${size}px`;
+            p.style.left = `${Math.random() * 100}vw`;
+            p.style.animationDuration = `${10 + Math.random() * 10}s`;
+            p.style.animationDelay = `-${Math.random() * 10}s`;
             partContainer.appendChild(p);
         }
 
-        // Slide nav & BG
+        // Slide navigation
         const slides = document.querySelectorAll('.slide');
-        let current = 0, scrolling = false, startY = 0;
+        let current = 0;
+
+        const backgrounds = [
+            '#0f2027, #203a43, #2c5364',
+            '#1e3c72, #2a5298',
+            '#ff7e5f, #feb47b',
+            '#3a1c71, #d76d77, #ffaf7b',
+            '#0f2027, #203a43, #2c5364',
+            '#1e3c72, #2a5298'
+        ];
+
         function show(idx) {
-            slides.forEach((s, i) => s.classList.toggle('active', i === idx));
-            const bgs = [
-                'radial-gradient(ellipse at center,#0f2027,#203a43,#2c5364)',
-                'radial-gradient(ellipse at center,#1e3c72,#2a5298)',
-                'radial-gradient(ellipse at center,#ff7e5f,#feb47b)',
-                'radial-gradient(ellipse at center,#3a1c71,#d76d77,#ffaf7b)',
-                'radial-gradient(ellipse at center,#0f2027,#203a43,#2c5364)',
-                'radial-gradient(ellipse at center,#1e3c72,#2a5298)'
-            ];
-            document.body.style.background = bgs[idx % bgs.length];
+            slides.forEach((slide, i) => slide.classList.toggle('active', i === idx));
+            document.body.style.background = `radial-gradient(ellipse at center, ${backgrounds[idx % backgrounds.length]})`;
         }
+
         function next() { if (current < slides.length - 1) show(++current); }
         function prev() { if (current > 0) show(--current); }
 
+        let throttle = false;
         window.addEventListener('wheel', e => {
-            if (scrolling) return;
-            scrolling = true;
+            if (throttle) return;
+            throttle = true;
             e.deltaY > 0 ? next() : prev();
-            setTimeout(() => scrolling = false, 600);
+            requestAnimationFrame(() => setTimeout(() => throttle = false, 500));
         });
+
+        let startY = 0;
         window.addEventListener('touchstart', e => startY = e.touches[0].clientY);
         window.addEventListener('touchend', e => {
             const dy = e.changedTouches[0].clientY - startY;
             if (Math.abs(dy) > 30) dy < 0 ? next() : prev();
         });
+
         window.addEventListener('keydown', e => {
-            if (e.key === 'ArrowDown' || e.key === 'PageDown') next();
-            if (e.key === 'ArrowUp' || e.key === 'PageUp') prev();
-        });
-        document.body.addEventListener('click', () => {
-            if (Math.random() < 0.01) window.location.href = 'https://soggy.cat';
+            if (['ArrowDown', 'PageDown'].includes(e.key)) next();
+            if (['ArrowUp', 'PageUp'].includes(e.key)) prev();
         });
 
-        // p-value calculation
-        const flipsSlider = document.getElementById('flipsSlider'),
-            headsSlider = document.getElementById('headsSlider'),
-            flipsCount = document.getElementById('flipsCount'),
-            headsCount = document.getElementById('headsCount'),
-            pValueDisplay = document.getElementById('pValue');
+        // P-Value calculator
+        const flipsSlider = document.getElementById('flipsSlider');
+        const headsSlider = document.getElementById('headsSlider');
+        const flipsCount = document.getElementById('flipsCount');
+        const headsCount = document.getElementById('headsCount');
+        const pValueDisplay = document.getElementById('pValue');
 
         function erf(x) {
             const sign = x < 0 ? -1 : 1; x = Math.abs(x);
             const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741;
             const a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
             const t = 1 / (1 + p * x);
-            const y = 1 - ((((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t) * Math.exp(-x * x);
+            const y = 1 - ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
             return sign * y;
         }
-        function normalCDF(z) { return (1 + erf(z / Math.sqrt(2))) / 2; }
+
+        const normalCDF = z => (1 + erf(z / Math.sqrt(2))) / 2;
 
         function updatePDemo() {
-            const n = parseInt(flipsSlider.value),
-                k = parseInt(headsSlider.value),
-                pObs = k / n,
-                se = Math.sqrt(0.5 * 0.5 / n),
-                z = (pObs - 0.5) / se,
-                p = 2 * (1 - normalCDF(Math.abs(z)));
+            const n = +flipsSlider.value, k = +headsSlider.value;
+            const pObs = k / n;
+            const se = Math.sqrt(0.25 / n);
+            const z = (pObs - 0.5) / se;
+            const p = 2 * (1 - normalCDF(Math.abs(z)));
             flipsCount.textContent = n;
             headsCount.textContent = k;
-            pValueDisplay.textContent = p.toFixed(4);
+            pValueDisplay.textContent = isNaN(p) ? 'N/A' : p.toFixed(4);
         }
-        flipsSlider.addEventListener('input', updatePDemo);
-        headsSlider.addEventListener('input', updatePDemo);
+
+        flipsSlider.oninput = headsSlider.oninput = updatePDemo;
         updatePDemo();
     </script>
 </body>
