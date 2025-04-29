@@ -10,7 +10,13 @@
         body {
             margin: 0;
             padding: 0;
-            overflow: hidden;
+
+
+            /*//scroll perchance? hidden-auto*/
+
+            overflow: auto;
+
+
             background: radial-gradient(ellipse at center, #0f2027, #203a43, #2c5364);
             font-family: 'Poppins', sans-serif;
             color: #fff;
@@ -18,7 +24,12 @@
             width: 100vw;
             perspective: 1200px;
             transition: background 1s ease;
-            touch-action: none;
+
+
+            /*//scroll perchance? none-auto*/
+
+
+            touch-action: auto;
         }
 
         /*
@@ -32,13 +43,13 @@
             background: #00c6ff;
             pointer-events: none;
 
-            //Prevent blocking interactions 
+            //Prevent blocking interactions
             transition: transform 0.1s ease-in-out;
             transform: scale(1);
             z-index: 9999;
         }
 
-        // Grow on hover over links/buttons 
+        // Grow on hover over links/buttons
         a:hover ~ .custom-cursor,
         button:hover ~ .custom-cursor {
             width: 35px;
@@ -49,15 +60,25 @@
 
         */
 
-        
 
+
+        /* old
+            
+    .container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+*/
 
         .container {
             position: relative;
             width: 100%;
-            height: 100%;
-            overflow: hidden;
+            min-height: 100%;
+            overflow-x: hidden; /* allow vertical scroll only */
         }
+
 
         .slide {
             position: absolute;
@@ -342,7 +363,7 @@
                 const soggyPaths = [
                     "dry",
                     "billy",
-                   ""
+                    ""
 
                 ];
 
