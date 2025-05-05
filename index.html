@@ -321,62 +321,59 @@ The P value is ~0.1022.
             if (['ArrowUp', 'PageUp'].includes(e.key)) prev();
         });
 
-// Grab elements
-const cardsSlider      = document.getElementById('cardsSlider');
-const acesSlider       = document.getElementById('acesSlider');
-const cardsCount       = document.getElementById('cardsCount');
-const acesCount        = document.getElementById('acesCount');
-const acePValueDisplay = document.getElementById('acePValue');
 
-// Fast factorial for moderate n
-function factorial(n) {
-  let res = 1;
-  for (let i = 2; i <= n; i++) res *= i;
-  return res;
-}
+        //stufffmathcoolthing
+  const cardsSlider = document.getElementById('cardsSlider');
+  const acesSlider = document.getElementById('acesSlider');
+  const cardsCount = document.getElementById('cardsCount');
+  const acesCount = document.getElementById('acesCount');
+  const acePValue = document.getElementById('acePValue');
 
-// Compute C(n, k)
-function binomialCoeff(n, k) {
-  if (k < 0 || k > n) return 0;
-  return factorial(n) / (factorial(k) * factorial(n - k));
-}
-
-// Exact binomial tail probability P(X >= k)
-function binomialPValue(n, k, p) {
-  let sum = 0;
-  for (let i = k; i <= n; i++) {
-    sum += binomialCoeff(n, i) * Math.pow(p, i) * Math.pow(1 - p, n - i);
-  }
-  return sum;
-}
-
-// Recalculate on any slider change
-function updateAceDemo() {
-  const n = parseInt(cardsSlider.value, 10);
-  const k = parseInt(acesSlider.value,  10);
-  const p = 1 / 13;
-
-  // Update labels
-  cardsCount.textContent = n;
-  acesCount.textContent  = k;
-
-  // If user requests more aces than cards, show N/A
-  if (k > n) {
-    acePValueDisplay.textContent = 'N/A';
-    return;
+  // Factorial with memoization for efficiency
+  const factorialCache = {};
+  function factorial(n) {
+    if (n in factorialCache) return factorialCache[n];
+    if (n === 0 || n === 1) return 1;
+    factorialCache[n] = n * factorial(n - 1);
+    return factorialCache[n];
   }
 
-  // Compute and display exact p-value
-  const pVal = binomialPValue(n, k, p);
-  acePValueDisplay.textContent = pVal.toFixed(4);
-}
+  function binomialCoeff(n, k) {
+    return factorial(n) / (factorial(k) * factorial(n - k));
+  }
 
-// Wire both sliders independently
-cardsSlider.addEventListener('input', updateAceDemo);
-acesSlider.addEventListener('input', updateAceDemo);
+  function binomialProb(n, k, p) {
+    return binomialCoeff(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+  }
 
-// Initial calculation
-updateAceDemo();
+  function calculatePValue(n, k, p) {
+    let pVal = 0;
+    for (let i = k; i <= n; i++) {
+      pVal += binomialProb(n, i, p);
+    }
+    return pVal;
+  }
+
+  function updateUI() {
+    const n = parseInt(cardsSlider.value);
+    const k = parseInt(acesSlider.value);
+    const p = 1 / 13;
+
+    cardsCount.textContent = n;
+    acesCount.textContent = k;
+
+    const pValue = calculatePValue(n, k, p);
+    acePValue.textContent = pValue.toExponential(3); // or .toFixed(4) for decimal
+  }
+
+  // Attach event listeners
+  cardsSlider.addEventListener('input', updateUI);
+  acesSlider.addEventListener('input', updateUI);
+
+  // Initial calculation
+  updateUI();
+
+
 
 
 
