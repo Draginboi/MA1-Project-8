@@ -321,62 +321,64 @@ The P value is ~0.1022.
             if (['ArrowUp', 'PageUp'].includes(e.key)) prev();
         });
 
-     const cardsSlider = document.getElementById('cardsSlider');
-const acesSlider = document.getElementById('acesSlider');
-const cardsCount = document.getElementById('cardsCount');
-const acesCount = document.getElementById('acesCount');
+// -- grab elements --
+const cardsSlider      = document.getElementById('cardsSlider');
+const acesSlider       = document.getElementById('acesSlider');
+const cardsCount       = document.getElementById('cardsCount');
+const acesCount        = document.getElementById('acesCount');
 const acePValueDisplay = document.getElementById('acePValue');
 
+// -- helper: compute n! safely for moderate n --
 function factorial(n) {
-    if (n === 0 || n === 1) return 1;
-    let result = 1;
-    for (let i = 2; i <= n; i++) result *= i;
-    return result;
+  let res = 1;
+  for (let i = 2; i <= n; i++) res *= i;
+  return res;
 }
 
+// -- helper: binomial coefficient C(n,k) --
 function binomialCoeff(n, k) {
-    if (k > n) return 0;
-    return factorial(n) / (factorial(k) * factorial(n - k));
+  if (k < 0 || k > n) return 0;
+  return factorial(n) / (factorial(k) * factorial(n - k));
 }
 
-function binomialProbability(n, k, p) {
-    return binomialCoeff(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
-}
-
+// -- helper: exact binomial tail probability P(X >= k) for X~Bin(n,p) --
 function binomialPValue(n, k, p) {
-    let pValue = 0;
-    for (let i = k; i <= n; i++) {
-        pValue += binomialProbability(n, i, p);
-    }
-    return pValue;
+  let sum = 0;
+  for (let i = k; i <= n; i++) {
+    sum += binomialCoeff(n, i) * Math.pow(p, i) * Math.pow(1 - p, n - i);
+  }
+  return sum;
 }
 
-function updateAcePDemo() {
-    const n = parseInt(cardsSlider.value);
-    let k = parseInt(acesSlider.value);
-    const p = 1 / 13;
+// -- main update fn, wired to both sliders --
+function updateAceDemo() {
+  const n = parseInt(cardsSlider.value, 10);
+  let k   = parseInt(acesSlider.value, 10);
+  const p = 1 / 13;
 
-    // Dynamically update acesSlider max
-    acesSlider.max = n;
+  // keep acesSlider max in sync
+  acesSlider.max = n;
+  if (k > n) {
+    k = n;
+    acesSlider.value = k;
+  }
 
-    // Clamp k to n
-    if (k > n) {
-        k = n;
-        acesSlider.value = k;
-    }
+  // update labels
+  cardsCount.textContent = n;
+  acesCount.textContent  = k;
 
-    cardsCount.textContent = n;
-    acesCount.textContent = k;
-
-    const pVal = binomialPValue(n, k, p);
-    acePValueDisplay.textContent = isNaN(pVal) ? 'N/A' : pVal.toFixed(4);
+  // compute and show the p-value
+  const pVal = binomialPValue(n, k, p);
+  acePValueDisplay.textContent = isNaN(pVal) ? 'N/A' : pVal.toFixed(4);
 }
 
-cardsSlider.addEventListener('input', updateAcePDemo);
-acesSlider.addEventListener('input', updateAcePDemo);
+// wire up events
+cardsSlider.addEventListener('input', updateAceDemo);
+acesSlider.addEventListener('input', updateAceDemo);
 
-// Initial calculation
-updateAcePDemo();
+// initial run
+updateAceDemo();
+
 
         /*
 
