@@ -234,14 +234,26 @@ The P value is ~0.094.
         </div>
 
         <div class="slide">
-            <h2>Interactive P-Value Demo</h2>
-            <p>Adjust these sliders to calculate a p-value for your coin-flip experiment:</p>
-            <label for="flipsSlider">Number of Flips: <span id="flipsCount">100</span></label>
-            <input type="range" id="flipsSlider" min="10" max="1000" step="10" value="100">
-            <label for="headsSlider">Number of Heads: <span id="headsCount">60</span></label>
-            <input type="range" id="headsSlider" min="0" max="1000" step="1" value="60">
-            <h3>Estimated P-Value: <span id="pValue">…</span></h3>
-        </div>
+    <h2>Interactive P-Value Demo</h2>
+    <p>Adjust these sliders to calculate a p-value for your coin-flip experiment:</p>
+
+    <div style="margin-bottom: 1em;">
+        <label for="flipsSlider">
+            Number of Flips: <span id="flipsCount">100</span>
+        </label><br>
+        <input type="range" id="flipsSlider" min="10" max="1000" step="10" value="100" style="width: 100%;">
+    </div>
+
+    <div style="margin-bottom: 1em;">
+        <label for="headsSlider">
+            Number of Heads: <span id="headsCount">60</span>
+        </label><br>
+        <input type="range" id="headsSlider" min="0" max="1000" step="1" value="60" style="width: 100%;">
+    </div>
+
+    <h3>Estimated P-Value: <span id="pValue">…</span></h3>
+</div>
+
 
         <footer>Made with ❤️ by Josh and Peter</footer>
 
