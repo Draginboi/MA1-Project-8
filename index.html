@@ -234,17 +234,26 @@ The P value is ~0.1022.
         </div>
 
 <div class="slide">
-    <h2>Card Draw P-Value Demo</h2>
-    <p>Set how many cards you pulled and how many were Aces. This calculates the p-value assuming a 1-in-13 chance of an Ace:</p>
+    <h2>Interactive Ace Pull Probability Demo</h2>
+    <p>Adjust the sliders to simulate pulling cards from a deck. The chance of pulling an Ace is fixed at 1 in 13 (~7.69%).</p>
 
-    <label for="cardsSlider">Number of Cards Pulled: <span id="cardsCount">20</span></label>
-    <input type="range" id="cardsSlider" min="1" max="100" value="20">
+    <div style="margin-bottom: 1em;">
+        <label for="cardsSlider">
+            Total Cards Pulled: <span id="cardsCount">10</span>
+        </label><br>
+        <input type="range" id="cardsSlider" min="1" max="100" step="1" value="10" style="width: 100%;">
+    </div>
 
-    <label for="acesSlider">Number of Aces Pulled: <span id="acesCount">2</span></label>
-    <input type="range" id="acesSlider" min="0" max="20" value="2">
+    <div style="margin-bottom: 1em;">
+        <label for="acesSlider">
+            Number of Aces Pulled: <span id="acesCount">1</span>
+        </label><br>
+        <input type="range" id="acesSlider" min="0" max="100" step="1" value="1" style="width: 100%;">
+    </div>
 
     <h3>Estimated P-Value: <span id="acePValue">…</span></h3>
 </div>
+
 
 
 
@@ -312,8 +321,7 @@ The P value is ~0.1022.
             if (['ArrowUp', 'PageUp'].includes(e.key)) prev();
         });
 
-       // Exact binomial p-value for Ace pulls
-const cardsSlider = document.getElementById('cardsSlider');
+     const cardsSlider = document.getElementById('cardsSlider');
 const acesSlider = document.getElementById('acesSlider');
 const cardsCount = document.getElementById('cardsCount');
 const acesCount = document.getElementById('acesCount');
@@ -344,23 +352,30 @@ function binomialPValue(n, k, p) {
 }
 
 function updateAcePDemo() {
-    const n = parseInt(cardsSlider.value);  // <-- THIS LINE NOW DYNAMICALLY READS SLIDER VALUE
-    const k = parseInt(acesSlider.value);
+    const n = parseInt(cardsSlider.value);
+    let k = parseInt(acesSlider.value);
     const p = 1 / 13;
+
+    // Dynamically update acesSlider max
+    acesSlider.max = n;
+
+    // Clamp k to n
+    if (k > n) {
+        k = n;
+        acesSlider.value = k;
+    }
 
     cardsCount.textContent = n;
     acesCount.textContent = k;
-
-    if (k > n) {
-        acePValueDisplay.textContent = "N/A";
-        return;
-    }
 
     const pVal = binomialPValue(n, k, p);
     acePValueDisplay.textContent = isNaN(pVal) ? 'N/A' : pVal.toFixed(4);
 }
 
-cardsSlider.oninput = acesSlider.oninput = updateAcePDemo;
+cardsSlider.addEventListener('input', updateAcePDemo);
+acesSlider.addEventListener('input', updateAcePDemo);
+
+// Initial calculation
 updateAcePDemo();
 
         /*
