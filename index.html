@@ -319,35 +319,49 @@ The P value is ~0.094.
             if (['ArrowUp', 'PageUp'].includes(e.key)) prev();
         });
 
-        // Ace Pull P-Value Calculator
+        // Exact binomial p-value for Ace pulls
 const cardsSlider = document.getElementById('cardsSlider');
 const acesSlider = document.getElementById('acesSlider');
 const cardsCount = document.getElementById('cardsCount');
 const acesCount = document.getElementById('acesCount');
 const acePValueDisplay = document.getElementById('acePValue');
 
-function erf(x) {
-    const sign = x < 0 ? -1 : 1; x = Math.abs(x);
-    const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741;
-    const a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
-    const t = 1 / (1 + p * x);
-    const y = 1 - ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
-    return sign * y;
+function factorial(n) {
+    return n <= 1 ? 1 : n * factorial(n - 1);
 }
 
-const normalCDF = z => (1 + erf(z / Math.sqrt(2))) / 2;
+function binomialCoeff(n, k) {
+    if (k > n) return 0;
+    return factorial(n) / (factorial(k) * factorial(n - k));
+}
+
+function binomialProbability(n, k, p) {
+    return binomialCoeff(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+}
+
+function binomialPValue(n, k, p) {
+    let pValue = 0;
+    for (let i = k; i <= n; i++) {
+        pValue += binomialProbability(n, i, p);
+    }
+    return pValue;
+}
 
 function updateAcePDemo() {
     const n = +cardsSlider.value;
     const k = +acesSlider.value;
-    const pExpected = 1 / 13;
-    const pObs = k / n;
-    const se = Math.sqrt((pExpected * (1 - pExpected)) / n);
-    const z = (pObs - pExpected) / se;
-    const p = 2 * (1 - normalCDF(Math.abs(z)));
+    const p = 1 / 13;
+
     cardsCount.textContent = n;
     acesCount.textContent = k;
-    acePValueDisplay.textContent = isNaN(p) ? 'N/A' : p.toFixed(4);
+
+    if (k > n) {
+        acePValueDisplay.textContent = "N/A";
+        return;
+    }
+
+    const pValue = binomialPValue(n, k, p);
+    acePValueDisplay.textContent = isNaN(pValue) ? 'N/A' : pValue.toFixed(4);
 }
 
 cardsSlider.oninput = acesSlider.oninput = updateAcePDemo;
